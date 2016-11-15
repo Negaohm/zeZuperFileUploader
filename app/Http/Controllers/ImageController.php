@@ -27,7 +27,7 @@ class ImageController extends Controller
      */
     public function create()
     {
-        return ('image.upload');
+        return view('image.create');
     }
 
     /**
@@ -38,7 +38,7 @@ class ImageController extends Controller
      */
     public function store(CreateImageRequest $request)
     {
-        $image = Image::create($request->all());
+        return abort(403);
         return redirect()->back();
     }
 
@@ -50,9 +50,24 @@ class ImageController extends Controller
      */
     public function show(Image $image)
     {
-        return Storage::disk('s3')->url($image->path);
+        return view("image.show",$image);
     }
 
+    /**
+     * Returns the iamge content from s3
+     * @param Image $image
+     */
+    public function raw(Image $image)
+    {
+        //first try out the cloud
+        if(Storage::drive("s3")->exists($image->path))
+            return Storage::disk('s3')->get($image->path);
+        //then go to local storage
+        if(Storage::drive("local")->exists($image->path))
+            return Storage::drive("local")->get($image->path);
+
+        abort(404);//not found
+    }
     /**
      * Show the form for editing the specified resource.
      *

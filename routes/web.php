@@ -16,5 +16,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
-$router->resource('image','ImageController');
-$router->resource('upload','UploadController');
+$router->resource('image','ImageController',["except"=>["store"]]);
+$router->get('/image/{$image}/raw',["as"=>"image.raw","uses"=>'ImageController@raw']);
+$router->post('/upload/image','UploadController@upload');
