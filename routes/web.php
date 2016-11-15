@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @var $router \Illuminate\Routing\Router
+ */
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,3 +16,5 @@
 Route::get('/', function () {
     return view('welcome');
 });
+$router->resource('image','ImageController');
+$router->resource('upload','UploadController');
