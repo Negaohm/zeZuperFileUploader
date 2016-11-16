@@ -26,4 +26,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    public function images()
+    {
+      return $this->hasManyThrough(Image::class,Album::class);
+    }
+    public function albums()
+    {
+      return $this->hasMany(Album::class);
+    }
 }

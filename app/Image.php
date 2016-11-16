@@ -21,6 +21,7 @@ class Image extends Model
         "path",
         "url"
     ];
+    
     public function album()
     {
         return $this->belongsTo(Album::class);
