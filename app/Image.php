@@ -21,6 +21,10 @@ class Image extends Model
         "path",
         "url"
     ];
+    public function album()
+    {
+        return $this->belongsTo(Album::class);
+    }
     public function getUrlAttribute($value)
     {
         return $this->attributes["url"] !== null ?: route("image.raw",$this);
@@ -33,6 +37,7 @@ class Image extends Model
     {
         $this->attributes["filename"] = Hash::make($this->id.$value.Carbon::now());
     }
+
 
 
 }
