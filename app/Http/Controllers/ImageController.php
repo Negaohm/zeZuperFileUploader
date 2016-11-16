@@ -61,10 +61,10 @@ class ImageController extends Controller
     {
         //first try out the cloud
         if(Storage::drive("s3")->exists($image->path))
-            return Storage::disk('s3')->get($image->path);
+            return response()->file(Storage::disk('s3')->get($image->path));
         //then go to local storage
         if(Storage::drive("local")->exists($image->path))
-            return Storage::drive("local")->get($image->path);
+            return response()->file(Storage::disk('local')->get($image->path));
 
         abort(404);//not found
     }

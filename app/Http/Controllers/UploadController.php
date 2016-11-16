@@ -19,19 +19,23 @@ class UploadController extends Controller
     {
         $f = $request->file("image");
         if($request->has("avatar"))
-            $album = Album::where('name','avatars')->firstOrFail();
+            $album = null;
         else
-            $album = $request->get("album");
+            $album = Album::findOrFail($request->get("album"));
 
         $user = Auth::user();
         $image = new Image();
         $image->user = $user;
         $image->filename = $f->getFilename();
+
         $image->album()->save($album);
         $image->save();
 
         $f->storeAs($image->folder,$image->filename);
         event(new FileWasUploaded($image));
+        if($request->ajax())
+            return $image;//just return the model
+        return redirect()->to("/home");
     }
 
 
