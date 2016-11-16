@@ -6,6 +6,7 @@ use App\Album;
 use App\Events\FileWasUploaded;
 use App\Http\Requests\AvatarUploadRequest;
 use App\Http\Requests\FileUploadRequest;
+use App\Image;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
