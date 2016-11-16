@@ -31,11 +31,12 @@ class Image extends Model
     }
     public function getPathAttribute($value)
     {
-        return  $this->album()->path ."/". $this->filename;
+        return $this->attributes["filename"];
     }
     public function setFilenameAttribute($value)
     {
-        $this->attributes["filename"] = Hash::make($this->id.$value.Carbon::now());
+        //make a hash out of the filename, album id, original filename and date
+        return $this->attributes["filename"] = Hash::make($this->attributes["filename"].$this->album()->id.$value.$value.Carbon::now());
     }
 
 
