@@ -13,7 +13,18 @@ class CreateAlbumTable extends Migration
      */
     public function up()
     {
-        //
+      Schema::create('albums', function (Blueprint $table) {
+          $table->increments('id');
+          $table->string("name");
+          $table->text("description");
+          $table->string("slug");
+
+          $table->integer("user_id")->unisgned();
+          $table->foreign("user_id")->references("id")->on("users");
+
+          $table->timestamps();
+          $table->softDeletes();
+      });
     }
 
     /**
@@ -23,6 +34,6 @@ class CreateAlbumTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists("albums");
     }
 }
