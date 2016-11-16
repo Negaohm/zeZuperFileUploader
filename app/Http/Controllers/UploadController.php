@@ -31,7 +31,7 @@ class UploadController extends Controller
         $image->album()->save($album);
         $image->save();
 
-        $f->storeAs($image->folder,$image->filename);
+        $f->storePubliclyAs(dirname($image->path),$image->filename);
         event(new FileWasUploaded($image));
         if($request->ajax())
             return $image;//just return the model
