@@ -5,8 +5,9 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class UploadFile extends TestCase
+class UploadFileTest extends TestCase
 {
+    use DatabaseMigrations;
     /**
      * A basic test example.
      *
@@ -16,6 +17,7 @@ class UploadFile extends TestCase
     {
         Auth::onceUsingId(1);
         $before = Image::all()->count();
+        $this->expectsEvents(App\Events\FileWasUploaded::class);
         $this->visit("/upload/image")
             ->attach(new File(storage_path("tests/img.jpg")),"image")
             ->press("upload");
