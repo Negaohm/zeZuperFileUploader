@@ -2,34 +2,37 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class Image extends Model
 {
+    use SoftDeletes;
     protected $table = "images";
     protected $fillable = [
         "url",
-        "filename"
+        "filename",
+
     ];
     protected $attributes = [
         "path",
-        "url",
-        "filename",
-        "folder"
+        "url"
     ];
-    public function getPathAttribute()
+    public function getUrlAttribute($value)
     {
-        return  $this->folder ."/". $this->filename;
+        return $this->attributes["url"] !== null ?: route("image.raw",$this);
     }
-    public function getFilenameAttribute()
+    public function getPathAttribute($value)
     {
-        return Hash::make($this->id.$this->filename);
+        return  $this->album()->path ."/". $this->filename;
     }
-    public function getFolderAttribute()
+    public function setFilenameAttribute($value)
     {
-        return $this->album()->path;
+        $this->attributes["filename"] = Hash::make($this->id.$value.Carbon::now());
     }
+
 
 }
