@@ -1,4 +1,4 @@
-<form class="" action="{{ route('image.create') }}" method="post">
+<form class="" action="{{ route('image.upload') }}" method="post">
   <h2>Upload an Image</h2>
   <input type="hidden" name="MAX_FILE_SIZE" value="2097152">
   <div class="input-group">
