@@ -22,6 +22,7 @@ class FileWasUploaded
     public function __construct(Image $image)
     {
         $this->file = $image;
+
     }
 
     /**

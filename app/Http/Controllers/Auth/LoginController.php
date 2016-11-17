@@ -21,7 +21,7 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    protected function credentials(Request $request)
+    /*protected function credentials(Request $request)
     {
         $field = filter_var($request->input('credentials'), FILTER_VALIDATE_EMAIL) ? 'email' : 'acronym';
         return [$field=>$request->input("credentials"),'password'=>$request->get("password")];
@@ -32,7 +32,7 @@ class LoginController extends Controller
         $this->validate($request, [
             $field => 'required|min:2', 'password' => 'required|min:6',
         ]);
-    }
+    }*/
     /**
      * Where to redirect users after login.
      *

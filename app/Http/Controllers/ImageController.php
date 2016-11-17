@@ -10,14 +10,20 @@ use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware("auth",["except"=>["raw","thumbnail"]]);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view("image.index");
+
+        return view("image.index",["images"=>$request->user()->images()->get()]);
     }
 
     /**
@@ -31,7 +37,7 @@ class ImageController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Should never come here, moved to UploadController@upload
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -59,13 +65,13 @@ class ImageController extends Controller
      */
     public function raw(Image $image)
     {
+        //dd($image->filename);
+        //then go to local storage
+        if(Storage::drive("local")->exists($image->filename))
+            return response()->file(storage_path("app/".$image->filename));
         //first try out the cloud
         if(Storage::drive("s3")->exists($image->path))
             return response()->file(Storage::disk('s3')->get($image->path));
-        //then go to local storage
-        if(Storage::drive("local")->exists($image->path))
-            return response()->file(Storage::disk('local')->get($image->path));
-
         abort(404);//not found
     }
     /**
@@ -76,6 +82,8 @@ class ImageController extends Controller
      */
     public function edit(Image $image)
     {
+        if(!$this->checkUserOnModel($image))
+            abort(403);
         return view('image.edit',$image);
     }
 
@@ -99,8 +107,24 @@ class ImageController extends Controller
      */
     public function destroy(Image $image)
     {
+        if(!$this->checkUserOnModel($image))
+            abort(403);
         Storage::disk("s3")->delete($image->path);
         $image->delete();
         return redirect()->to("/images");
     }
+    public function thumbnail(Request $request, Image $image)
+    {
+        $storage = \Storage::drive(env("FILESYSTEM_DRIVER",'local'));
+        $path = storage_path("app/".$image->filename."_thumb");
+        if(!$storage->exists($path))//if thumbnail doesnt exist, create it
+        {
+            $thumb = \Image::make(storage_path("app/".$image->filename));
+            $thumb->fit(200,200);
+            $thumb->save($path);
+        }
+
+        return response()->file($path);
+    }
+
 }

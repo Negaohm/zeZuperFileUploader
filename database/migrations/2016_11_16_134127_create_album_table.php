@@ -13,18 +13,19 @@ class CreateAlbumTable extends Migration
      */
     public function up()
     {
-      Schema::create('albums', function (Blueprint $table) {
-          $table->increments('id');
-          $table->string("name");
-          $table->text("description")->nullable();
-          $table->string("slug");
+        Schema::create("albums",function (Blueprint $table) {
+            $table->increments("id");
+            $table->string("name",50);
+            $table->text("description")->nullable();
 
-          $table->integer("user_id")->unisgned();
-          $table->foreign("user_id")->references("id")->on("users");
+            $table->string("slug")->nullable()->unique();
 
-          $table->timestamps();
-          $table->softDeletes();
-      });
+            $table->unsignedInteger("user_id");
+            $table->foreign("user_id")->references("id")->on("users");
+            $table->softDeletes();
+            $table->timestamps();
+            $table->unique(["user_id","name"]);
+        });
     }
 
     /**

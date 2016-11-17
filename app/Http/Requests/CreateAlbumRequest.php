@@ -3,17 +3,18 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
-class CreateImageRequest extends FormRequest
+class CreateAlbumRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(Request $request)
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,7 @@ class CreateImageRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "name"=>"required" //|unique:albums,name,NULL,id,user_id,".\Auth::user()->id
         ];
     }
 }

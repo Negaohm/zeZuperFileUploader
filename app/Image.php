@@ -15,29 +15,44 @@ class Image extends Model
     protected $fillable = [
         "url",
         "filename",
-
+        "album_id",
+        "user_id"
     ];
-    protected $attributes = [
+    protected $appends = [
         "path",
-        "url"
+        "filename",
+        "url",
+        "thumbnail_url"
     ];
-    
+
     public function album()
     {
         return $this->belongsTo(Album::class);
     }
-    public function getUrlAttribute($value)
+    public function user()
     {
-        return $this->attributes["url"] !== null ?: route("image.raw",$this);
+        return $this->belongsTo(User::class);
     }
-    public function getPathAttribute($value)
+    public function getUrlAttribute()
     {
-        return $this->attributes["filename"];
+        return array_key_exists("url",$this->attributes) ?: route("image.raw",$this);
+    }
+    public function getThumbnailUrlAttribute()
+    {
+        return array_key_exists("url",$this->attributes) ?: route("image.thumbnail",$this);
+    }
+    public function getPathAttribute()
+    {
+        return $this->attributes["filename"]; //with the bcrypt signature we have, it should always be unique, and unreversible
     }
     public function setFilenameAttribute($value)
     {
         //make a hash out of the filename, album id, original filename and date
-        return $this->attributes["filename"] = Hash::make($this->attributes["filename"].$this->album()->id.$value.$value.Carbon::now());
+        $this->attributes["filename"] = Str::slug(Hash::make($value.$value.Carbon::now()->toTimeString()));
+    }
+    public function getFilenameAttribute($value)
+    {
+        return $this->attributes["filename"];
     }
 
 

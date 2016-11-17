@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Album;
 use App\User;
 use App\Http\Controllers\Controller;
+use DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -62,17 +64,29 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        DB::beginTransaction(); //Start transaction!
 
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
-        Album::create([
-          "name"=>"default",
-          "description"=>"",
-          "user"=>$user
-        ])
+        try{
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+            ]);
+            $a = Album::create([
+                "name"=>"default",
+                "user_id"=>$user->id
+            ]);
+        }
+        catch(\Exception $e)
+        {
+            //failed logic here
+            DB::rollback();
+            throw $e;
+        }
+
+        DB::commit();
+        /*$a->user()->associate($user);
+        $a->save();*/
         return $user;
     }
 }
