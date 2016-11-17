@@ -39,12 +39,15 @@ class Image extends Model
     }
     public function getThumbnailUrlAttribute()
     {
+      return array_key_exists("thumbnail_url",$this->attributes) ?: route("image.thumbnail",$this);
     }
     public function getPathAttribute()
     {
+      return storage_path("app/".$this->attributes["filename"]);
     }
     public function setFilenameAttribute($value)
     {
+        $this->attributes["original_filename"] = $value;
         //make a hash out of the filename, album id, original filename and date
         $this->attributes["filename"] = Str::slug(Hash::make($value.$value.Carbon::now()->toTimeString()));
     }
