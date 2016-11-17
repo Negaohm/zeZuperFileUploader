@@ -19,8 +19,16 @@ class CreateImageTable extends Migration
             $table->text("path");
             $table->text("url")->nullable();
 
+
             $table->timestamps();
             $table->softDeletes();
+        });
+        Schema::create("album_image",function (Blueprint $table) {
+            $table->unsignedInteger("image_id");
+            $table->foreign("image_id")->references("id")->on("images");
+
+            $table->unsignedInteger("album_id");
+            $table->foreign("album_id")->references("id")->on("albums");
         });
     }
 
@@ -31,6 +39,8 @@ class CreateImageTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists("album_image");
         Schema::dropIfExists('images');
+
     }
 }

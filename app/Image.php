@@ -23,7 +23,7 @@ class Image extends Model
     ];
     public function album()
     {
-        return $this->belongsTo(Album::class);
+        return $this->belongsToMany(Album::class);
     }
     public function getUrlAttribute($value)
     {
@@ -31,12 +31,12 @@ class Image extends Model
     }
     public function getPathAttribute($value)
     {
-        return $this->attributes["filename"];
+        return $this->attributes["filename"]; //with the bcrypt signature we have, it should always be unique, and unreversible
     }
     public function setFilenameAttribute($value)
     {
         //make a hash out of the filename, album id, original filename and date
-        return $this->attributes["filename"] = Hash::make($this->attributes["filename"].$this->album()->id.$value.$value.Carbon::now());
+        return $this->attributes["filename"] = Hash::make($this->attributes["filename"].$this->album()->id.$value.$value.Carbon::now()->toTimeString());
     }
 
 

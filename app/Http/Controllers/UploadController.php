@@ -15,6 +15,7 @@ class UploadController extends Controller
 {
     public function __construct()
     {
+        $this->middleware("auth");
     }
     public function upload(FileUploadRequest $request)
     {
@@ -36,7 +37,7 @@ class UploadController extends Controller
         event(new FileWasUploaded($image));
         if($request->ajax())
             return $image;//just return the model
-        return redirect()->to("/home");
+        return redirect()->to(route("album.show",$album->id));
     }
 
 
