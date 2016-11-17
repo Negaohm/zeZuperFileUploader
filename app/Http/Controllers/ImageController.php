@@ -6,8 +6,8 @@ use App\Http\Requests\CreateImageRequest;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use App\Image;
-use Illuminate\Support\Facades\Storage;
-
+use App\Lib\ImageManipulation;
+use Storage;
 class ImageController extends Controller
 {
     public function __construct()
@@ -67,11 +67,8 @@ class ImageController extends Controller
     {
         //dd($image->filename);
         //then go to local storage
-        if(Storage::drive("local")->exists($image->filename))
-            return response()->file(storage_path("app/".$image->filename));
-        //first try out the cloud
-        if(Storage::drive("s3")->exists($image->path))
-            return response()->file(Storage::disk('s3')->get($image->path));
+        $storage = \Storage::drive(env("FILESYSTEM_DRIVER",'local'));
+        return response()->file($storage->url($image->path));
         abort(404);//not found
     }
     /**
@@ -115,15 +112,34 @@ class ImageController extends Controller
     }
     public function thumbnail(Request $request, Image $image)
     {
-        $storage = \Storage::drive(env("FILESYSTEM_DRIVER",'local'));
-        $path = storage_path("app/".$image->filename."_thumb");
-        if(!$storage->exists($path))//if thumbnail doesnt exist, create it
-        {
-            $thumb = \Image::make(storage_path("app/".$image->filename));
-            $thumb->fit(200,200);
-            $thumb->save($path);
+      $path = false;
+        try{
+          if(Storage::cloud()->exists(ImageManipulation::thumbnailName($image->filename)))
+            $path = $image->thumbnail_url;//its already in the cloud
+
+
+        }
+        catch(\Aws\S3\Exception\S3Exception $e){
+          $pathToThumbnail = ImageManipulation::thumbnailName($image->path);
+          if(Storage::exists($pathToThumbnail)){
+            $path = $pathToThumbnail;
+          }
+          else{
+            $path = ImageManipulation::createThumbnail($image->path);
+          }
+
         }
 
+        // $storage = \Storage::drive(env("FILESYSTEM_DRIVER",'local'));
+        // $path = storage_path("app/".$image->filename."_thumb");
+        // if(!$storage->exists($path))//if thumbnail doesnt exist, create it
+        // {
+        //     $thumb = \Image::make(storage_path("app/".$image->filename));
+        //     $thumb->fit(200,200);
+        //     $thumb->save($path);
+        // }
+        if(!$path)
+          abort(404);
         return response()->file($path);
     }
 

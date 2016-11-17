@@ -17,6 +17,7 @@ class CreateImageTable extends Migration
             $table->increments('id');
             $table->uuid("version")->nullable();
             $table->string("filename")->unique();
+            $table->string("original_filename");
             $table->unsignedInteger("album_id");
             $table->foreign("album_id")->references("id")->on("albums");
             $table->unsignedInteger("user_id");

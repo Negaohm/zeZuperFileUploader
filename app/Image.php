@@ -39,22 +39,17 @@ class Image extends Model
     }
     public function getThumbnailUrlAttribute()
     {
-        return array_key_exists("url",$this->attributes) ?: route("image.thumbnail",$this);
+        return array_key_exists("thumbnail_url",$this->attributes) ?: route("image.thumbnail",$this);
     }
     public function getPathAttribute()
     {
-        return $this->attributes["filename"]; //with the bcrypt signature we have, it should always be unique, and unreversible
+        return storage_path("app/".$this->attributes["filename"]); //with the bcrypt signature we have, it should always be unique, and unreversible
     }
     public function setFilenameAttribute($value)
     {
         //make a hash out of the filename, album id, original filename and date
+        $this->attributes["original_filename"] = $value;
         $this->attributes["filename"] = Str::slug(Hash::make($value.$value.Carbon::now()->toTimeString()));
     }
-    public function getFilenameAttribute($value)
-    {
-        return $this->attributes["filename"];
-    }
-
-
 
 }
