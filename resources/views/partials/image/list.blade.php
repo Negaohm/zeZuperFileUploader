@@ -1,4 +1,5 @@
 <div class="row">
+
   @forelse($images as $img)
     @if($loop->iteration % 3 == 1)
       </div>
