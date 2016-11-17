@@ -1,4 +1,4 @@
-<form class="" action="{{ route('album.store') }}" method="post">
+<form class="" action="{{ route('album.update') }}" method="post">
   <h2>Edit Album <small>{{{ $al->name }}}</small></h2>
   <div class="input-group">
     <span class="input-group-addon">Name</span>

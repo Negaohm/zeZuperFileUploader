@@ -7,7 +7,7 @@
   </div>
   <select class="form-control" name="album">
     {{ csrf_field() }}
-    @foreach($album as $al)
+    @foreach($albums as $al)
       <option value="{{$al->id}}">{{$al->name}}</option>
     @endforeach
   </select>
