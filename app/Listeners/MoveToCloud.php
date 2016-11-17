@@ -27,6 +27,7 @@ class MoveToCloud implements ShouldQueue
      */
     public function handle(FileWasUploaded $event)
     {
+        return;
         $path = Storage::drive("s3")->put($event->file->path,new File($event->file->path));
         $event->file->url = Storage::drive("s3")->url($path);
         $event->file->save();

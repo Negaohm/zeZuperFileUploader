@@ -19,7 +19,7 @@ class UploadController extends Controller
     }
     public function upload(FileUploadRequest $request)
     {
-        $f = $request->file("image");
+        $f = $request->file("file");
         if($request->has("avatar"))
             $album = null;
         else
@@ -27,17 +27,17 @@ class UploadController extends Controller
 
         $user = Auth::user();
         $image = new Image();
-        $image->user = $user;
-        $image->filename = $f->getFilename();
-
-        $image->album()->save($album);
+        $image->filename = $f->getClientOriginalName();
+        $image->album_id = $album->id;
+        $image->user_id = Auth::user()->id;
+        //dd($image);
         $image->save();
 
         $f->storePubliclyAs(dirname($image->path),$image->filename);
         event(new FileWasUploaded($image));
         if($request->ajax())
             return $image;//just return the model
-        return redirect()->to(route("album.show",$album->id));
+        return redirect()->to(route("album.show",$album->id))->with("message","Image uploaded successfully");
     }
 
 

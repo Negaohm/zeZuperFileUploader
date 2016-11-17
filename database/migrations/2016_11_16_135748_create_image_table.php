@@ -16,20 +16,21 @@ class CreateImageTable extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid("version")->nullable();
-            $table->text("path");
-            $table->text("url")->nullable();
-
-
+            $table->string("filename")->unique();
+            $table->unsignedInteger("album_id");
+            $table->foreign("album_id")->references("id")->on("albums");
+            $table->unsignedInteger("user_id");
+            $table->foreign("user_id")->references("id")->on("users");
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::create("album_image",function (Blueprint $table) {
+        /*Schema::create("album_image",function (Blueprint $table) {
             $table->unsignedInteger("image_id");
             $table->foreign("image_id")->references("id")->on("images");
 
             $table->unsignedInteger("album_id");
             $table->foreign("album_id")->references("id")->on("albums");
-        });
+        });*/
     }
 
     /**

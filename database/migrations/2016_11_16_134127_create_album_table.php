@@ -24,6 +24,7 @@ class CreateAlbumTable extends Migration
             $table->foreign("user_id")->references("id")->on("users");
             $table->softDeletes();
             $table->timestamps();
+            $table->unique(["user_id","name"]);
         });
     }
 

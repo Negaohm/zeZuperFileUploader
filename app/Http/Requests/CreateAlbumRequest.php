@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Album;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 
-class FileUploadRequest extends FormRequest
+class CreateAlbumRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,8 +14,7 @@ class FileUploadRequest extends FormRequest
      */
     public function authorize(Request $request)
     {
-        $album = Album::findOrFail($request->get("album"));
-        return $album->user()->first()->id == \Auth::user()->id;
+        return true;
     }
 
     /**
@@ -27,8 +25,7 @@ class FileUploadRequest extends FormRequest
     public function rules()
     {
         return [
-            "file"=>"required|image",
-            "album"=>"required|exists:albums,id"
+            "name"=>"required" //|unique:albums,name,NULL,id,user_id,".\Auth::user()->id
         ];
     }
 }

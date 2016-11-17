@@ -4,11 +4,12 @@ namespace App;
 
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Album extends Model
 {
-    use Sluggable;
+    use Sluggable, SoftDeletes;
     protected $table = "albums";
     protected $fillable = [
         "name",
@@ -16,7 +17,7 @@ class Album extends Model
         "user_id"
     ];
 
-    protected function user()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

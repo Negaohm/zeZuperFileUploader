@@ -14,7 +14,8 @@
 */
 
 $router->get('/home',["as"=>"home","uses"=>"HomeController@home"]);
-$router->get('/',["as"=>"welcome","uses"=>"HomeController@welcome"]);
+$router->get('/',["as"=>"welcome","uses"=>"HomeController@welcome"])->middleware("guest");
+
 //auth routes
 $router->get('login', 'Auth\LoginController@showLoginForm')->name('login');
 $router->post('login', 'Auth\LoginController@login');
@@ -35,5 +36,7 @@ $router->resource("album","AlbumController");
 
 //images
 $router->resource('image','ImageController',["except"=>["store"]]);
-$router->get('/image/{$image}/raw',["as"=>"image.raw","uses"=>'ImageController@raw']);
+$router->get('/image/{image}/raw',["as"=>"image.raw","uses"=>'ImageController@raw']);
+$router->get('/image/{image}/thumbnail',["as"=>"image.thumbnail","uses"=>'ImageController@thumbnail']);
 $router->post('/upload/image',["as"=>"image.upload",'uses'=>'UploadController@upload']);
+$router->get('/upload/image',["as"=>"image.store_2",'uses'=>'ImageController@create']);

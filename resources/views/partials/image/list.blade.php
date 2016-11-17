@@ -1,3 +1,3 @@
 @foreach ($images as $key => $img)
-  <img class="img-thumbnail" src="{{$img->url}}" alt="{{{$img->filename}}}"/>
+  <a href="{!! $img->url !!}"><img class="img-thumbnail" src="{!! $img->thumbnail_url !!}" alt="{{$img->filename}}"/></a>
 @endforeach

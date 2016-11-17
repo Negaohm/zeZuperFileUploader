@@ -2,21 +2,18 @@
 
 namespace App\Http\Requests;
 
-use App\Album;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Request;
 
-class FileUploadRequest extends FormRequest
+class DeleteImageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(Request $request)
+    public function authorize()
     {
-        $album = Album::findOrFail($request->get("album"));
-        return $album->user()->first()->id == \Auth::user()->id;
+        return false;
     }
 
     /**
@@ -27,8 +24,7 @@ class FileUploadRequest extends FormRequest
     public function rules()
     {
         return [
-            "file"=>"required|image",
-            "album"=>"required|exists:albums,id"
+            //
         ];
     }
 }
