@@ -5,7 +5,7 @@
     <span class="input-group-addon">Name</span>
     <input class="form-control" type="file" name="file" value="" placeholder="">
   </div>
-  <select class="form-control" name="album_selected">
+  <select class="form-control" name="album">
     {{ csrf_field() }}
     @foreach($album as $al)
       <option value="{{$al->id}}">{{$al->name}}</option>

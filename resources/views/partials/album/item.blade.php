@@ -5,6 +5,6 @@
       </span>
     </div>
     <div class="panel-body">
-        My album baby
+        @include('partials.image.list',['images'=>$al->images()])
     </div>
 </div>

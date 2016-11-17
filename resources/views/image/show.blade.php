@@ -1,11 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.lambda')
 
-@section('content')
-  <div class="container">
-      <div class="row">
-          <div class="col-md-8 col-md-offset-2">
-              @include('partials.image.show',$img)<!-- TODO $img does not exist-->
-          </div>
-      </div>
-  </div>
+@section('innercnt')
+  @include('partials.image.show',['image'=>$image])
 @endsection
