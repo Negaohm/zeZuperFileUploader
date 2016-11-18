@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Album;
+use App\Events\ImageDeletedEvent;
 use App\Http\Requests\CreateImageRequest;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\File;
@@ -57,7 +59,7 @@ class ImageController extends Controller
      */
     public function show(Image $image)
     {
-        return view("image.show",$image);
+        return view("image.show",compact("image"));
     }
 
     /**
@@ -78,11 +80,12 @@ class ImageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Image $image)
+    public function edit(Request $request,Image $image)
     {
         if(!$this->checkUserOnModel($image))
             abort(403);
-        return view('image.edit',$image);
+        $albums = Album::where("user_id",$request->user()->id)->get();
+        return view('image.edit',compact("albums","image"));
     }
 
     /**
@@ -105,11 +108,13 @@ class ImageController extends Controller
      */
     public function destroy(Image $image)
     {
+
         if(!$this->checkUserOnModel($image))
             abort(403);
-        Storage::disk("s3")->delete($image->path);
+        //Storage::disk("s3")->delete($image->path);
         $image->delete();
-        return redirect()->to("/images");
+        event(new ImageDeletedEvent($image->path));
+        return redirect()->to("/image");
     }
     public function thumbnail(Request $request, Image $image)
     {

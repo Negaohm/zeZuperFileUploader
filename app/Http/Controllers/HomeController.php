@@ -18,7 +18,7 @@ class HomeController extends Controller
     }
     public function home(Request $request)
     {
-        return view("home",["user"=>Auth::user(),'images'=>Image::lastTen()->get()]);
+        return view("home",["user"=>Auth::user(),'images'=>Image::lastTen()->where("user_id","!=",$request->user()->id)->get(),'myImages'=>Image::lastTen()->where("user_id",$request->user()->id)->get()]);
     }
 
 }
