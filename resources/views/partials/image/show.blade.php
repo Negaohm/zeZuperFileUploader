@@ -8,5 +8,9 @@
         <a href="{{ route("image.destroy",$img) }}" data-method="delete" data-confirm="Are you sure you want to delete this superbe image?" type="button" class="btn btn-danger">Delete</a>
       </div>
     @endif
+    @include('partials.comment.list',$comments)
+    @if(\Auth::check())
+      @include('partials.comment.form')
+    @endif
   </div>
 </div>
