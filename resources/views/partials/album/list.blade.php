@@ -1,1 +1,1 @@
-@each('partials.album.item', $albums, 'al')
+@each('partials.album.item', $albums, 'al',"partials.album.empty")

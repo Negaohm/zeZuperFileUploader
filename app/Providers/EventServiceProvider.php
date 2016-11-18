@@ -14,7 +14,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         'App\Events\FileWasUploaded'=>[
-            'App\Listeners\MoveToCloud'
+            'App\Listeners\UploadFile'
         ]
     ];
 

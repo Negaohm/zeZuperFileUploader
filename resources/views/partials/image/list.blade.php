@@ -1,3 +1,12 @@
-@foreach ($images as $key => $img)
-  <a href="{!! $img->url !!}"><img class="img-thumbnail" src="{!! $img->thumbnail_url !!}" alt="{{$img->filename}}"/></a>
-@endforeach
+<div class="row">
+
+  @forelse($images as $img)
+    @if($loop->iteration % 3 == 1)
+      </div>
+      <div class="row">
+    @endif
+      @include("partials.image.show",compact("img"))
+  @empty
+    @include("partials.image.empty")
+  @endforelse
+</div>

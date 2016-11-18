@@ -9,7 +9,7 @@ use App\Http\Requests\FileUploadRequest;
 use App\Image;
 use Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Storage;
 
 class UploadController extends Controller
 {
@@ -32,12 +32,15 @@ class UploadController extends Controller
         $image->user_id = Auth::user()->id;
         //dd($image);
         $image->save();
-
-        $f->storePubliclyAs(dirname($image->path),$image->filename);
+        Storage::put($image->filename, file_get_contents($f->getRealPath()));
         event(new FileWasUploaded($image));
         if($request->ajax())
             return $image;//just return the model
         return redirect()->to(route("album.show",$album->id))->with("message","Image uploaded successfully");
+    }
+    public function avatar(FileUploadRequest $request)
+    {
+      abort(403,"not now yet");
     }
 
 

@@ -5,9 +5,9 @@ namespace App\Listeners;
 use App\Events\FileWasUploaded;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Storage;
-
-class MoveToCloud implements ShouldQueue
+use App\Jobs\CreateThumbnail;
+use App\Jobs\UploadToCloud;
+class UploadFile implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -27,9 +27,9 @@ class MoveToCloud implements ShouldQueue
      */
     public function handle(FileWasUploaded $event)
     {
-        return;
-        $path = Storage::drive("s3")->put($event->file->path,new File($event->file->path));
-        $event->file->url = Storage::drive("s3")->url($path);
-        $event->file->save();
+        dispatch(new CreateThumbnail($event->file));
+        dispatch(new UploadToCloud($event->file));
+
+        return true;
     }
 }
