@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateImageRequest;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use App\Image;
 use App\Lib\ImageManipulation;
@@ -67,8 +68,8 @@ class ImageController extends Controller
     {
         //dd($image->filename);
         //then go to local storage
-        $storage = \Storage::drive(env("FILESYSTEM_DRIVER",'local'));
-        return response()->file($storage->url($image->path));
+        //$storage = \Storage::drive(env("FILESYSTEM_DRIVER",'local'));
+        return response()->file($image->path);
         abort(404);//not found
     }
     /**
@@ -116,8 +117,6 @@ class ImageController extends Controller
         try{
           if(Storage::cloud()->exists(ImageManipulation::thumbnailName($image->filename)))
             $path = $image->thumbnail_url;//its already in the cloud
-
-
         }
         catch(\Aws\S3\Exception\S3Exception $e){
           $pathToThumbnail = ImageManipulation::thumbnailName($image->path);
@@ -127,17 +126,8 @@ class ImageController extends Controller
           else{
             $path = ImageManipulation::createThumbnail($image->path);
           }
-
         }
 
-        // $storage = \Storage::drive(env("FILESYSTEM_DRIVER",'local'));
-        // $path = storage_path("app/".$image->filename."_thumb");
-        // if(!$storage->exists($path))//if thumbnail doesnt exist, create it
-        // {
-        //     $thumb = \Image::make(storage_path("app/".$image->filename));
-        //     $thumb->fit(200,200);
-        //     $thumb->save($path);
-        // }
         if(!$path)
           abort(404);
         return response()->file($path);

@@ -22,9 +22,17 @@ class Image extends Model
         "path",
         "filename",
         "url",
-        "thumbnail_url"
+        "thumbnail_url",
+        "original_filename"
     ];
-
+    public function scopeLastTen($query)
+    {
+        return $query->orderBy("created_at","desc")->take(10);
+    }
+    public function scopeFromToday($query)
+    {
+        return $query->where("created_at",">=",Carbon::today())->orderBy("created_at","desc")->take(10);
+    }
     public function album()
     {
         return $this->belongsTo(Album::class);
@@ -50,6 +58,14 @@ class Image extends Model
         $this->attributes["original_filename"] = $value;
         //make a hash out of the filename, album id, original filename and date
         $this->attributes["filename"] = Str::slug(Hash::make($value.$value.Carbon::now()->toTimeString()));
+    }
+    public function getFilenameAttribute()
+    {
+        return $this->attributes["filename"];
+    }
+    public function getOriginalFilenameAttribute()
+    {
+        return $this->attributes["original_filename"];
     }
 
 }
