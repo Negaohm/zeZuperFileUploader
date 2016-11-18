@@ -40,3 +40,5 @@ $router->get('/image/{image}/raw',["as"=>"image.raw","uses"=>'ImageController@ra
 $router->get('/image/{image}/thumbnail',["as"=>"image.thumbnail","uses"=>'ImageController@thumbnail']);
 $router->post('/upload/image',["as"=>"image.upload",'uses'=>'UploadController@upload']);
 $router->get('/upload/image',["as"=>"image.store_2",'uses'=>'ImageController@create']);
+
+$router->resource("image.comment",'CommentController',["except"=>"create","update","edit"]);

@@ -19,6 +19,6 @@ class Controller extends BaseController
      */
     protected function checkUserOnModel($model)
     {
-        return $model->user()->first()->id == \Auth::user()->id;
+        return \Auth::check() && $model->user->id == \Auth::user()->id;
     }
 }

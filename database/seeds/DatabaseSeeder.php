@@ -1,5 +1,7 @@
 <?php
 
+use App\Album;
+use App\Image;
 use App\User;
 use Illuminate\Database\Seeder;
 
@@ -23,7 +25,12 @@ class DatabaseSeeder extends Seeder
             "email"=>"westixy@gmail.com",
             "password"=>bcrypt("123456")
         ]);
-        $user->albums()->create(["name"=>"default"]);
+        $album = Album::create(["name"=>"default","user"=>$user]);
+        $f = new \Illuminate\Http\File(storage_path("tests/img.jpg"));
+        $image = Image::create(["filename"=>$f->getFilename(),"user"=>$user,"album"=>$album]);
+        $f->move($image->path);
+
+        //$user->images()->create(["filename"=>$f->getFilename()]);
         // $this->call(UsersTableSeeder::class);
     }
 }
