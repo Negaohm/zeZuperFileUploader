@@ -1,15 +1,10 @@
 @if(isset($comment))
-<form class="" action="{!! route('comment.update',$comment) !!}" method="post">
-  {{ method_field('PATCH') }}
-  <h2>Edit Comment <small>{{ $comment->id }}</small></h2>
-  <input type="hidden" name="id" value="{{ $comment->id }}"
-  <textarea class="form-control" name="text" placeholder="album desc">{{ $comment->text }}</textarea>
-  <input class="btn btn-primary" type="submit" name="update_album" value="Update">
+    <form class="" action="{{ route('image.comment.store',$comment->image) }}" method="post">
+    <input type="hidden" name="parent" value="{{ $comment->id }}">
 @else
-<form class="" action="{{ route('comment.store') }}" method="post">
-<h2>Comment</h2>
-<textarea class="form-control" name="text" placeholder="album desc"></textarea>
-<input class="btn btn-primary" type="submit" name="update_album" value="Update">
+        <form class="" action="{{ route('image.comment.store',$image) }}" method="post">
 @endif
+            <input class="btn btn-primary" type="submit" name="update_album" value="Comment">
+            <textarea class="form-control" name="text" placeholder="Comment"></textarea>
 {{ csrf_field() }}
 </form>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Album;
 use App\Events\ImageDeletedEvent;
 use App\Http\Requests\CreateImageRequest;
+use App\Jobs\CreateThumbnail;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
@@ -130,9 +131,10 @@ class ImageController extends Controller
           }
           else{
             $path = ImageManipulation::createThumbnail($image->path);
+              $this->dispatch(new CreateThumbnail($image));
           }
         }
-
+        dd($path);
         if(!$path)
           abort(404);
         return response()->file($path);

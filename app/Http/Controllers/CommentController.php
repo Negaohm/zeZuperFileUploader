@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\Http\Requests\CreateCommentRequest;
 use App\Image;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware("auth");
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +23,7 @@ class CommentController extends Controller
      */
     public function index(Request $request,Image $image)
     {
-        return view("comment.list",compact("image"));
+        return view("image.show",compact("image"));
     }
 
     /**
@@ -37,11 +43,18 @@ class CommentController extends Controller
      * @param Image $image
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Image $image)
+    public function store(CreateCommentRequest $request, Image $image)
     {
         $comment = new Comment($request->except("_token","_method"));
-
-        if($request->has("parent"));
+        $comment->user_id = \Auth::user()->id;
+        $comment->image_id = $image->id;
+        if($request->has("parent")){
+            $comment->parent_id = Comment::findOrFail($request->get("parent"));
+        }
+        $comment->save();
+        if($request->ajax())
+            return $comment;
+        return redirect()->back();
     }
 
     /**

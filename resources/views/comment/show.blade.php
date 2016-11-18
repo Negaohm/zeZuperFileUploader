@@ -1,5 +1,6 @@
 @extends('layouts.lambda')
 
 @section('innercnt')
-  @include('partials.comment.item',$comment)
+    {{ dd($image) }}
+  @include('partials.comment.item',compact("image","comment"))
 @endsection

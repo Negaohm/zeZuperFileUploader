@@ -41,6 +41,10 @@ class Image extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
     public function getUrlAttribute()
     {
         return array_key_exists("url",$this->attributes) ?: route("image.raw",$this);
