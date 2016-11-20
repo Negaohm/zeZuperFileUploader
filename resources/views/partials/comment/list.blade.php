@@ -1,3 +1,4 @@
-<ul class="media-list">
+{{--<ul class="media-list">
   @each('partials.comment.item', $comments, 'comment')
-</ul>
+</ul>--}}
+@each('partials.comment.item', $comments, 'comment')

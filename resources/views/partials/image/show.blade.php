@@ -12,7 +12,7 @@
 
       @include('partials.comment.form',["image"=>$img])
     @endif
-    @include('partials.comment.list',["comments"=>$img->comments])
+    @include('partials.comment.list',["comments"=>$img->comments()->where("parent_id",null)->get()])
 
   </div>
 </div>

@@ -49,7 +49,7 @@ class CommentController extends Controller
         $comment->user_id = \Auth::user()->id;
         $comment->image_id = $image->id;
         if($request->has("parent")){
-            $comment->parent_id = Comment::findOrFail($request->get("parent"));
+            $comment->parent_id = Comment::findOrFail($request->get("parent"))->id;
         }
         $comment->save();
         if($request->ajax())

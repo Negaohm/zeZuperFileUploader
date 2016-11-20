@@ -25,7 +25,7 @@ class CreateCommentRequest extends FormRequest
     {
         return [
             "text"=>"required|max:255",
-            "parent"=>"sometimes|exists:comments"
+            "parent"=>"sometimes|exists:comments,id"
         ];
     }
 }
