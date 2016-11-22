@@ -99,7 +99,10 @@ If you have any problems with this install script, please create an [issue](http
 ## Install manually
 
 If you do not use homestead, nor a virtual machine (hang in there), then you may install all needed tools for this, such as:
-
+ * PHP
+ * composer
+ * (phpunit only if you want testing)
+ 
 ### Requirements
 
  * PHP >= 5.6 (php version 5.6 or higher)
