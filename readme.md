@@ -1,40 +1,135 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img width="150"src="https://laravel.com/laravel.png"></a></p>
+# Ze zuper image sharing
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+![logo](https://media.giphy.com/media/K68xWrKuS5aTe/giphy.gif)
 
-## About Laravel
+This project is built in PHP with the [Laravel framework](http://laravel.com) (5.3). It is aimed for a cloud use.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+Please, please, please use either vagrant and/or an ubuntu machine, this will save you a baaaad headache.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
+The installation script is meant to be used on an ubuntu 14.04 (Trusty Tahr) or ubuntu 16.04 (Xenial Xerus).
 
-## Learning Laravel
+If you install this on a windows, god save your soul but it may be possible. This installation script will therefor not help you, you will need to refer to the [laravel docs](http://laravel.com/docs/installation).
 
-Laravel has the most extensive and thorough documentation and video tutorial library of any modern web application framework. The [Laravel documentation](https://laravel.com/docs) is thorough, complete, and makes it a breeze to get started learning the framework.
+It is strongly recommended if you are using [vagrant](https://www.vagrantup.com/) to install [Homestead](http://https://laravel.com/docs/homestead).
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+## Install Homestead
 
-## Contributing
+If you do use vagrant (please make youself a favor and do so), then to install Homestead you will need git.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+### On linux
+On a bash
+```bash
+vagrant box add laravel/homestead
+cd ~
+git clone https://github.com/laravel/homestead.git Homestead
+cd Homestead
+bash init.sh
+```
+After that you will need to edit your ``` Homestead.yaml ``` file in your homestead home directory with your favorite editor (``` nano ~/.homestead/Homestead.yaml ```). This file will define all your virtual machines.
 
-## Security Vulnerabilities
+### On windows
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+On a cmd
+```
+cd %USERPROFILE%
+git clone https://github.com/laravel/homestead.git Homestead
+cd Homestead
+init.bat
+```
 
-## License
+After that you will need to edit your ``` Homestead.yaml ``` file in your homestead home directory with your favorite editor (``` notepad %USERPROFILE%\.homestead\Homestead.yaml ```). This file will define all your virtual machines.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+### Configuration of your Homestead.yaml
+
+This is an example of my own Homestead.yaml file.
+
+```
+---
+ip: "192.168.10.10"
+memory: 2048
+cpus: 1
+provider: virtualbox
+
+authorize: ~/.ssh/id_rsa.pub
+
+keys:
+    - ~/.ssh/id_rsa
+
+folders:
+    - map: C:/dev/
+      to: /home/vagrant/Code
+
+sites:
+    - map: homestead.app
+      to: /home/vagrant/Code/image-sharing/public
+      schedule: true
+databases:
+    - homestead
+
+```
+
+On windows, you will need to put drive letters in capital letters.
+
+### Using homestead
+
+After installing your vagrant homestead box, you will need to execute the following command to up your machine ``` cd ~/Homestead ```(``` cd %USERPROFILE%\Homestead ```) and execute the command ``` vagrant up ```
+
+## Install on Ubuntu
+
+If you posses a virtual machine with ubuntu 14.04, or higher, you can use this script.
+```bash
+wget -O - https://raw.githubusercontent.com/CPNV-ES/image-sharing/installation_script/install.sh | sudo bash  
+```
+
+If you have any problems with this install script, please create an [issue](https://github.com/CPNV-ES/image-sharing/issues/new) on the project.
+
+## Install manually
+
+If you do not use homestead, nor a virtual machine (hang in there), then you may install all needed tools for this, such as:
+
+### Requirements
+
+ * PHP >= 5.6 (php version 5.6 or higher)
+ * OpenSSL PHP Extension
+ * PDO PHP Extension
+ * Mbstring PHP Extension
+ * Tokenizer PHP Extension
+ * XML PHP Extension
+
+After installing php, don't forget to add it to your path, you will need it later.
+
+Linux/Mac ```$ PATH:$PATH: ```
+
+Windows/wamp ```> set PATH=%PATH%;C:\wamp\php ```
+
+
+That is only for the PHP part, then you will need to install [composer](http://getcomposer.org/download).
+
+```bash
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('SHA384', 'composer-setup.php') === 'aa96f26c2b67226a324c27919f1eb05f21c248b987e6195cad9690d5c1ff713d53020a02ac8c217dbf90a7eacc9d141d') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+```
+
+After installing composer, execute the following commands to setup the project environnement ``` cp .env.example .env && php artisan key:generate ``` . Then edit the ```.env``` file to suite your needs, please refer to the [laravel documentation](https://laravel.com/docs/configuration) for that.
+
+# Sources
+
+Some sources to help you set up
+
+https://laravel.com/docs
+
+https://scotch.io/tutorials/understanding-laravel-environment-variables
+
+https://git-for-windows.github.io/
+
+https://getcomposer.org/download/
+
+http://www.wikihow.com/Install-Laravel-Framework-in-Windows
+
+https://24ways.org/2014/what-is-vagrant-and-why-should-i-care/
+
+http://www.wikihow.com/Hack-a-Computer
