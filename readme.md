@@ -18,8 +18,9 @@ If you install this on a windows, god save your soul but it may be possible. Thi
 
 It is strongly recommended if you are using [vagrant](https://www.vagrantup.com/) to install [Homestead](http://https://laravel.com/docs/homestead). You also could just go with an Ubuntu virtual machine, and use the install script.
 
-After installing you will need to execute these 2 artisan commands to finish the setup.
+After installing you will need to execute these 3 commands to finish the setup and install the framework.
 ```
+composer install
 php artisan key:generate
 php artisan migrate --seed
 ```
@@ -44,6 +45,7 @@ After that you will need to edit your ``` Homestead.yaml ``` file in your homest
 
 On a cmd
 ```
+vagrant box add laravel/homestead
 cd %USERPROFILE%
 git clone https://github.com/laravel/homestead.git Homestead
 cd Homestead
@@ -102,7 +104,7 @@ If you do not use homestead, nor a virtual machine (hang in there), then you may
  * PHP
  * composer
  * (phpunit only if you want testing)
- 
+
 ### Requirements
 
  * PHP >= 5.6 (php version 5.6 or higher)
