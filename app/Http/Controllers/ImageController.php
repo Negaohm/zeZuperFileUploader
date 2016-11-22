@@ -2,22 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Album;
+use App\Events\ImageDeletedEvent;
 use App\Http\Requests\CreateImageRequest;
+use App\Jobs\CreateThumbnail;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use App\Image;
-use Illuminate\Support\Facades\Storage;
-
+use App\Lib\ImageManipulation;
+use Storage;
 class ImageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware("auth",["except"=>["raw","thumbnail"]]);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view("image.index");
+
+        return view("image.index",["images"=>$request->user()->images()->get()]);
     }
 
     /**
@@ -27,18 +37,18 @@ class ImageController extends Controller
      */
     public function create()
     {
-        return ('image.upload');
+        return view('image.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Should never come here, moved to UploadController@upload
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(CreateImageRequest $request)
     {
-        $image = Image::create($request->all());
+        return abort(403);
         return redirect()->back();
     }
 
@@ -50,18 +60,33 @@ class ImageController extends Controller
      */
     public function show(Image $image)
     {
-        return Storage::disk('s3')->url($image->path);
+        return view("image.show",compact("image"));
     }
 
+    /**
+     * Returns the iamge content from s3
+     * @param Image $image
+     */
+    public function raw(Image $image)
+    {
+        //dd($image->filename);
+        //then go to local storage
+        //$storage = \Storage::drive(env("FILESYSTEM_DRIVER",'local'));
+        return response()->file($image->path);
+        abort(404);//not found
+    }
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Image $image)
+    public function edit(Request $request,Image $image)
     {
-        return view('image.edit',$image);
+        if(!$this->checkUserOnModel($image))
+            abort(403);
+        $albums = Album::where("user_id",$request->user()->id)->get();
+        return view('image.edit',compact("albums","image"));
     }
 
     /**
@@ -84,8 +109,35 @@ class ImageController extends Controller
      */
     public function destroy(Image $image)
     {
-        Storage::disk("s3")->delete($image->path);
+
+        if(!$this->checkUserOnModel($image))
+            abort(403);
+        //Storage::disk("s3")->delete($image->path);
         $image->delete();
-        return redirect()->to("/images");
+        event(new ImageDeletedEvent($image->path));
+        return redirect()->to("/image");
     }
+    public function thumbnail(Request $request, Image $image)
+    {
+      $path = false;
+        try{
+          if(Storage::cloud()->exists(ImageManipulation::thumbnailName($image->filename)))
+            $path = $image->thumbnail_url;//its already in the cloud
+        }
+        catch(\Aws\S3\Exception\S3Exception $e){
+          $pathToThumbnail = ImageManipulation::thumbnailName($image->path);
+          if(Storage::exists($pathToThumbnail)){
+            $path = $pathToThumbnail;
+          }
+          else{
+            $path = ImageManipulation::createThumbnail($image->path);
+              $this->dispatch(new CreateThumbnail($image));
+          }
+        }
+        dd($path);
+        if(!$path)
+          abort(404);
+        return response()->file($path);
+    }
+
 }

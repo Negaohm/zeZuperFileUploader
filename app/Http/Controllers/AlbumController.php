@@ -3,18 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Album;
+use App\Http\Requests\CreateAlbumRequest;
+use App\Http\Requests\UpdateAlbumRequest;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class AlbumController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware("auth");
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('album.index');//list all albums
+        return view('album.index',["albums"=>$request->user()->albums()->get()]);//list all albums
     }
 
     /**
@@ -33,10 +41,17 @@ class AlbumController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateAlbumRequest $request)
     {
-        $album = Album::create($request->all());
-        return redirect()->to("/album/{$album->slug}");
+        $album = new Album($request->all());
+        $album->user_id = $request->user()->id;
+        try{
+            $album->save();
+        }
+        catch(QueryException $e){
+            return redirect()->back()->withErrors(["msg"=>"The album already exists"]);
+        }
+        return redirect()->to("/album/{$album->id}")->with("message","Album added successfully");
     }
 
     /**
@@ -47,7 +62,7 @@ class AlbumController extends Controller
      */
     public function show(Album $album)
     {
-        return view("album.show",$album);
+        return view("album.show", ["album"=>$album]);
     }
 
     /**
@@ -58,7 +73,7 @@ class AlbumController extends Controller
      */
     public function edit(Album $album)
     {
-        return view("album.edit",$album);
+        return view("album.edit",["album"=>$album]);
     }
 
     /**
@@ -68,10 +83,12 @@ class AlbumController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Album $album)
+    public function update(UpdateAlbumRequest $request, Album $album)
     {
+        if(!$this->checkUserOnModel($album))
+            return abort(403);
         $album->update($request->all());
-        return redirect()->back();
+        return redirect()->back()->with("message","Album updated successfully");
     }
 
     /**
@@ -82,7 +99,10 @@ class AlbumController extends Controller
      */
     public function destroy(Album $album)
     {
+        if(!$this->checkUserOnModel($album))
+            abort(403);
+        $name = $album->name;
         $album->delete();
-        return redirect()->to("/album");
+        return redirect()->to("/album")->with("message","Album {$name} destroyed...");
     }
 }

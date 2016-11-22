@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -20,6 +21,18 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+    /*protected function credentials(Request $request)
+    {
+        $field = filter_var($request->input('credentials'), FILTER_VALIDATE_EMAIL) ? 'email' : 'acronym';
+        return [$field=>$request->input("credentials"),'password'=>$request->get("password")];
+    }
+    protected function validateLogin(Request $request)
+    {
+        $field = filter_var($request->input('credentials'), FILTER_VALIDATE_EMAIL) ? 'email' : 'acronym';
+        $this->validate($request, [
+            $field => 'required|min:2', 'password' => 'required|min:6',
+        ]);
+    }*/
     /**
      * Where to redirect users after login.
      *
