@@ -44,6 +44,7 @@ After that you will need to edit your ``` Homestead.yaml ``` file in your homest
 
 On a cmd
 ```
+vagrant box add laravel/homestead
 cd %USERPROFILE%
 git clone https://github.com/laravel/homestead.git Homestead
 cd Homestead
@@ -102,7 +103,7 @@ If you do not use homestead, nor a virtual machine (hang in there), then you may
  * PHP
  * composer
  * (phpunit only if you want testing)
- 
+
 ### Requirements
 
  * PHP >= 5.6 (php version 5.6 or higher)
