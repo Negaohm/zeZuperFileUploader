@@ -4,6 +4,10 @@
 
 This project is built in PHP with the [Laravel framework](http://laravel.com) (5.3). It is aimed for a cloud use.
 
+The app uses redis as a Queue driver, if none is specified in the .env file. A queue is used for the upload to cloud of image files.
+
+If you did not install redis, or cannot for whatever reason, set ```QUEUE_DRIVER=sync```. By setting the queue to sync, it will process the queue on every request, instead of doing it in the background.
+
 Please, please, please use either vagrant and/or an ubuntu machine, this will save you a baaaad headache.
 
 ## Installation
@@ -12,7 +16,14 @@ The installation script is meant to be used on an ubuntu 14.04 (Trusty Tahr) or 
 
 If you install this on a windows, god save your soul but it may be possible. This installation script will therefor not help you, you will need to refer to the [laravel docs](http://laravel.com/docs/installation).
 
-It is strongly recommended if you are using [vagrant](https://www.vagrantup.com/) to install [Homestead](http://https://laravel.com/docs/homestead).
+It is strongly recommended if you are using [vagrant](https://www.vagrantup.com/) to install [Homestead](http://https://laravel.com/docs/homestead). You also could just go with an Ubuntu virtual machine, and use the install script.
+
+After installing you will need to execute these 2 artisan commands to finish the setup.
+```
+php artisan key:generate
+php artisan migrate --seed
+```
+
 
 ## Install Homestead
 
@@ -114,7 +125,7 @@ php composer-setup.php
 php -r "unlink('composer-setup.php');"
 ```
 
-After installing composer, execute the following commands to setup the project environnement ``` cp .env.example .env && php artisan key:generate ``` . Then edit the ```.env``` file to suite your needs, please refer to the [laravel documentation](https://laravel.com/docs/configuration) for that.
+After installing composer, execute the following commands to setup the project environnement ``` cp .env.example .env && composer install && php artisan key:generate && php artisan migrate --seed ``` . Then edit the ```.env``` file to suite your needs, please refer to the [laravel documentation](https://laravel.com/docs/configuration) for that.
 
 # Sources
 
