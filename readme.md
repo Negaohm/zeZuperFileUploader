@@ -25,7 +25,35 @@ php artisan key:generate
 php artisan migrate --seed
 ```
 
+### Imagemagick or GD?
 
+For thumbnail generation, we used ImageMagick. **ImageMacgick is not installed by default with PHP**. If you don't want/dohaven't installed ImageMagick you can, or you can change the configuration file ``` config/image.php ```, and change it to
+ 
+ ```php
+  <?php
+  
+  return array(
+  
+      /*
+      |--------------------------------------------------------------------------
+      | Image Driver
+      |--------------------------------------------------------------------------
+      |
+      | Intervention Image supports "GD Library" and "Imagick" to process images
+      | internally. You may choose one of them according to your PHP
+      | configuration. By default PHP's "GD Library" implementation is used.
+      |
+      | Supported: "gd", "imagick"
+      |
+      */
+  
+      'driver' => 'gd'
+  
+  );
+
+ ```
+Now your PHP installation will work with GD. But you might have errors with thumbnail generation!
+To install ImageMagick, please refer to the documentation [docs](http://lmgtfy.com/?q=install+imagemagick+php+homestead) (i'm bored of writing docs that nobody really reads completely....).
 ## Install Homestead
 
 If you do use vagrant (please make youself a favor and do so), then to install Homestead you will need git.
