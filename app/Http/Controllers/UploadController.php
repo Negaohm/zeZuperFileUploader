@@ -25,15 +25,12 @@ class UploadController extends Controller
         else
             $album = Album::findOrFail($request->get("album"));
 
-        $user = Auth::user();
         $image = new Image();
         $image->filename = $f->getClientOriginalName();
         $image->album_id = $album->id;
         $image->user_id = Auth::user()->id;
-        //dd($image);
         $image->save();
         Storage::put($image->filename, file_get_contents($f->getRealPath()));
-        event(new FileWasUploaded($image));
         if($request->ajax())
             return $image;//just return the model
         return redirect()->to(route("album.show",$album->id))->with("message","Image uploaded successfully");

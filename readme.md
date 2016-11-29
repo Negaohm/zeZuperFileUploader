@@ -21,13 +21,14 @@ It is strongly recommended if you are using [vagrant](https://www.vagrantup.com/
 After installing you will need to execute these 3 commands to finish the setup and install the framework.
 ```
 composer install
+cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
 ```
 
-### Imagemagick or GD?
+### Imagick or GD?
 
-For thumbnail generation, we used ImageMagick. **ImageMacgick is not installed by default with PHP**. If you don't want/dohaven't installed ImageMagick you can, or you can change the configuration file ``` config/image.php ```, and change it to
+For thumbnail generation, we used Imagick. **Imagick is not installed by default with PHP**. If you don't want/haven't installed Imagick you can, or you can change the configuration file ``` config/image.php ```, and change it to
  
  ```php
   <?php

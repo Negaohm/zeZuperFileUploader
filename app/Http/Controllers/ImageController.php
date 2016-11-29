@@ -16,7 +16,7 @@ class ImageController extends Controller
 {
     public function __construct()
     {
-        $this->middleware("auth",["except"=>["raw","thumbnail"]]);
+        $this->middleware("auth",["except"=>["thumbnail"]]);
     }
 
     /**
@@ -64,14 +64,11 @@ class ImageController extends Controller
     }
 
     /**
-     * Returns the iamge content from s3
+     * Returns the image content from data
      * @param Image $image
      */
     public function raw(Image $image)
     {
-        //dd($image->filename);
-        //then go to local storage
-        //$storage = \Storage::drive(env("FILESYSTEM_DRIVER",'local'));
         return response()->file($image->path);
         abort(404);//not found
     }
@@ -112,29 +109,30 @@ class ImageController extends Controller
 
         if(!$this->checkUserOnModel($image))
             abort(403);
-        //Storage::disk("s3")->delete($image->path);
         $image->delete();
         event(new ImageDeletedEvent($image->path));
         return redirect()->to("/image");
     }
+
+    /**
+     * Generates a thumbnail for an image
+     * @param Request $request
+     * @param Image $image
+     * @return mixed
+     */
     public function thumbnail(Request $request, Image $image)
     {
-      $path = false;
-        try{
-          if(Storage::cloud()->exists(ImageManipulation::thumbnailName($image->filename)))
-            $path = $image->thumbnail_url;//its already in the cloud
+        //dd($image->url);
+        $path = false;
+
+        $pathToThumbnail = ImageManipulation::thumbnailName($image->path);
+        if(Storage::exists($pathToThumbnail)){
+          $path = $pathToThumbnail;
         }
-        catch(\Aws\S3\Exception\S3Exception $e){
-          $pathToThumbnail = ImageManipulation::thumbnailName($image->path);
-          if(Storage::exists($pathToThumbnail)){
-            $path = $pathToThumbnail;
-          }
-          else{
-            $path = ImageManipulation::createThumbnail($image->path);
-              $this->dispatch(new CreateThumbnail($image));
-          }
+        else{
+          $path = ImageManipulation::createThumbnail($image->path);
         }
-        dd($path);
+
         if(!$path)
           abort(404);
         return response()->file($path);

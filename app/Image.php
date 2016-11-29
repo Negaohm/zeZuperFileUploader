@@ -16,7 +16,9 @@ class Image extends Model
         "url",
         "filename",
         "album_id",
-        "user_id"
+        "user_id",
+        "thumbnail_url",
+        "url"
     ];
     protected $appends = [
         "path",
@@ -47,11 +49,11 @@ class Image extends Model
     }
     public function getUrlAttribute()
     {
-        return array_key_exists("url",$this->attributes) ?: route("image.raw",$this);
+        return array_key_exists("url",$this->attributes) && $this->attributes["url"] !== null ? $this->attributes["url"] : route("image.raw",$this);
     }
     public function getThumbnailUrlAttribute()
     {
-      return array_key_exists("thumbnail_url",$this->attributes) ?: route("image.thumbnail",$this);
+      return array_key_exists("thumbnail_url",$this->attributes)&& $this->attributes["thumbnail_url"] !== null ? $this->attributes["thumbnail_url"] : route("image.thumbnail",$this);
     }
     public function getPathAttribute()
     {

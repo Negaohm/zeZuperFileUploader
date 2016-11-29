@@ -27,9 +27,6 @@ class UploadFile implements ShouldQueue
      */
     public function handle(FileWasUploaded $event)
     {
-        dispatch(new CreateThumbnail($event->file));
-        dispatch(new UploadToCloud($event->file));
-
         return true;
     }
 }
