@@ -1,6 +1,6 @@
 # Ze zuper image sharing
 
-![logo](https://media.giphy.com/media/K68xWrKuS5aTe/giphy.gif)
+![logo](http://www.doggifpage.com/gifs/114.gif)
 
 This project is built in PHP with the [Laravel framework](http://laravel.com) (5.3). It is aimed for a cloud use.
 
