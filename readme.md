@@ -178,3 +178,5 @@ http://www.wikihow.com/Install-Laravel-Framework-in-Windows
 https://24ways.org/2014/what-is-vagrant-and-why-should-i-care/
 
 http://www.wikihow.com/Hack-a-Computer
+
+![bill](http://ll-media.tmz.com/2014/12/15/1215-bill-cosby-tmz-5.jpg)
