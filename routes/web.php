@@ -12,6 +12,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+$router->get("/asd",function(){
+  echo "asd";
+});
 
 $router->get('/home',["as"=>"home","uses"=>"HomeController@home"]);
 $router->get('/',["as"=>"welcome","uses"=>"HomeController@welcome"])->middleware("guest");
@@ -40,5 +43,6 @@ $router->get('/image/{image}/raw',["as"=>"image.raw","uses"=>'ImageController@ra
 $router->get('/image/{image}/thumbnail',["as"=>"image.thumbnail","uses"=>'ImageController@thumbnail']);
 $router->post('/upload/image',["as"=>"image.upload",'uses'=>'UploadController@upload']);
 $router->get('/upload/image',["as"=>"image.store_2",'uses'=>'ImageController@create']);
+$router->get('/upload/s3details',["as"=>"upload.s3details",'uses'=>'UploadController@s3details']);
 
 $router->resource("image.comment",'CommentController',["except"=>"create","update","edit"]);

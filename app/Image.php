@@ -27,6 +27,42 @@ class Image extends Model
         "thumbnail_url",
         "original_filename"
     ];
+        /**
+     * Create temporary URLs to your protected Amazon S3 files.
+     *
+     * @param string $key Your Amazon S3 access key
+     * @param string $secret Your Amazon S3 secret key
+     * @param string $bucket The bucket (bucket.s3.amazonaws.com)
+     * @param string $path The target file path
+     * @param int $expiry In minutes
+     * @return string Temporary Amazon S3 URL
+     * @see http://awsdocs.s3.amazonaws.com/S3/20060301/s3-dg-20060301.pdf
+     */
+    function getS3TemporaryUrl($path, $expiry = 30)
+    {
+        $key = config('filesystems.disks.s3.key');
+        $secret = config('filesystems.disks.s3.secret');
+        $bucket = config('filesystems.disks.s3.bucket');
+        $expiry = time() + $expiry * 60;
+
+        // Format the string to be signed
+        $string = sprintf("GET\n\n\n%s\n/%s/%s", $expiry, $bucket, $path);
+
+        // Generate an HMAC-SHA1 signature for it
+        $signature = base64_encode(hash_hmac('sha1', $string, $secret, true));
+
+        // Create the final URL
+        return sprintf(
+            "%s?%s",
+            $path,
+            http_build_query([
+                'AWSAccessKeyId' => $key,
+                'Expires' => $expiry,
+                'Signature' => $signature
+            ])
+        );
+    }
+
     public function scopeLastTen($query)
     {
         return $query->orderBy("created_at","desc")->take(10);
@@ -49,7 +85,7 @@ class Image extends Model
     }
     public function getUrlAttribute()
     {
-        return array_key_exists("url",$this->attributes) && $this->attributes["url"] !== null ? $this->attributes["url"] : route("image.raw",$this);
+        return array_key_exists("url",$this->attributes) && $this->attributes["url"] !== null ? $this->getS3TemporaryUrl($this->attributes["url"]) : route("image.raw",$this);
     }
     public function getThumbnailUrlAttribute()
     {
